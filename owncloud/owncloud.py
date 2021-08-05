@@ -901,13 +901,20 @@ class Client(object):
             tree = ET.fromstring(res.content)
             self._check_ocs_status(tree)
             data_el = tree.find('data')
+            name_ = ''
+            try:
+                name_ = data_el.find('name').text
+            except:
+                # Sometimes we get here «AttributeError: 'NoneType' object has no attribute 'text' »
+                pass 
+
             return ShareInfo(
                                 {
                                     'id': data_el.find('id').text,
                                     'path': path,
                                     'url': data_el.find('url').text,
                                     'token': data_el.find('token').text,
-                                    'name': data_el.find('name').text
+                                    'name': name_
                                 }
             )
         raise HTTPResponseError(res)
